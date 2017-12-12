@@ -1,0 +1,129 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>GPS Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+    <script>
+        function deleteUser(btn) {
+            btn.parentNode.parentNode.className = "selected";
+            var uid = $("tr.selected td:first").html();
+
+            $.ajax({
+                dataType: 'text',
+                type: 'DELETE',
+                url: '/user',
+                data: {
+                    uid: uid
+                },
+                error: function (res) {
+                    btn.parentNode.parentNode.className = "";
+                },
+                success: function (res) {
+
+                }
+            });
+
+
+        }
+
+        function deleteAll() {
+            $.ajax({
+                url: '/cart',
+                type: 'DELETE',
+                success: function (res) {
+                    // Do something with the result
+                }
+            });
+        }
+        
+    </script>
+</head>
+
+<body>
+    <div class="generic-container">
+        <div class="panel-heading text-center">
+            <span class="lead">GPS Management </span>
+        </div>
+        <div class="container">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h1>
+                    <span class="fa fa-sign-in"></span> Devices</h1>
+                <% if (typeof messages !== 'undefined') {%>
+                    <div class="alert alert-danger">
+                        <p>
+                            <%= messages %>
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <!-- LOGIN FORM -->
+                        <form action="/devices" method="post">
+                            <div class="form-group">
+                                <label>Devices Name</label>
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                            <div class="control-group">
+                                <label>User</label>
+                                <select name="user" class="selectpicker">
+                                <% if (typeof userlist !== 'undefined') {%>
+                                    <%for(var i=0; i < userlist.length; i++) {%>
+                                        <option value="<%= userlist[i].uid%>"><%= userlist[i].email%></option>
+                                        <% } %>
+                                            <% } %>
+                                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-lg">Submit</button>
+                        </form>
+            </div>
+        </div>
+
+        <div class="tablecontainer">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>UID</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (typeof data !== 'undefined') {%>
+                        <%for(var i=0; i < data.length; i++) {  %>
+                            <tr>
+                                <td>
+                                    <%= data[i].uid %>
+                                </td>
+                                <td>
+                                    <%= data[i].email%>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger " onclick="deleteUser(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <% } %>
+                </tbody>
+            </table>
+
+            <div class="well">
+                Go to
+                <a href="/user">Users List</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
